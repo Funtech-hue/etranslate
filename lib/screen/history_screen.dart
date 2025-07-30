@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -17,9 +18,17 @@ class HistoryScreen extends StatelessWidget {
         future: SharedPreferences.getInstance(),
         builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Lottie.asset(
+                'assets/animations/eLoading.json',
+                repeat: true,
+                height: 100,
+                width: 100,
+              ),
+            );
           }
-          final history = snapshot.data!.getStringList('translation_history') ?? [];
+          final history =
+              snapshot.data!.getStringList('translation_history') ?? [];
           if (history.isEmpty) {
             return Center(child: Text('No history yet'));
           }
@@ -33,9 +42,12 @@ class HistoryScreen extends StatelessWidget {
                 child: ListTile(
                   title: Text('${item['input']}'),
                   subtitle: Text(
-                      '${item['output']} (${item['source']} → ${item['target']})'),
+                    '${item['output']} (${item['source']} → ${item['target']})',
+                  ),
                   trailing: Text(
-                    DateTime.parse(item['timestamp']).toLocal().toString().split('.')[0],
+                    DateTime.parse(
+                      item['timestamp'],
+                    ).toLocal().toString().split('.')[0],
                     style: TextStyle(fontSize: 12),
                   ),
                 ),

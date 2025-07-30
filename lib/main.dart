@@ -1,6 +1,7 @@
 import 'package:etranslate/services/TranslationProvider.dart';
 import 'package:etranslate/ult/navBar.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -14,9 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => TranslationProvider()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => TranslationProvider())],
       child: MaterialApp(
         title: 'e-Translator',
         debugShowCheckedModeBanner: false,
@@ -40,7 +39,7 @@ class SplashScreen extends StatelessWidget {
     Future.delayed(Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => navBar()),
+        MaterialPageRoute(builder: (_) => GetStarter()),
       );
     });
     return Scaffold(
@@ -50,14 +49,75 @@ class SplashScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 250),
-            CircleAvatar(radius: 60, backgroundColor: Colors.greenAccent),
-            SizedBox(height: 10),
-            Text('Translating Anywhere Everywhere'),
+            Lottie.asset(
+              'assets/animations/eSplash.json',
+              repeat: true,
+              animate: true,
+              reverse: true,
+              width: 200,
+              height: 200,
+            ),
+            SizedBox(height: 15),
+            Text('Translating Anywhere Everywhere', style: TextStyle(fontSize: 20)),
             Spacer(),
-            CircularProgressIndicator(),
+            Lottie.asset(
+              'assets/animations/eLoading.json',
+              repeat: true,
+              height: 80,
+              width: 80,
+            ),
             SizedBox(height: 50),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class GetStarter extends StatelessWidget {
+  const GetStarter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Lottie.asset(
+            'assets/animations/eillustration.json',
+            repeat: true,
+            reverse: true,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          ),
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.green),
+                foregroundColor: MaterialStatePropertyAll(Colors.white),
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                padding: MaterialStatePropertyAll(
+                  EdgeInsets.symmetric(vertical: 10),
+                ),
+              ),
+
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => navBar()),
+                );
+              },
+              label: Text('Get Starter', style: TextStyle(fontSize: 20)),
+              icon: Icon(Icons.arrow_forward_ios_sharp),
+            ),
+          ),
+        ],
       ),
     );
   }

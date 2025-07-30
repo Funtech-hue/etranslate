@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -17,7 +18,14 @@ class FavoritesScreen extends StatelessWidget {
         future: SharedPreferences.getInstance(),
         builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Lottie.asset(
+                'assets/animations/eLoading.json',
+                repeat: true,
+                height: 100,
+                width: 100,
+              ),
+            );
           }
           final favorites = snapshot.data!.getStringList('favorites') ?? [];
           if (favorites.isEmpty) {
@@ -33,7 +41,8 @@ class FavoritesScreen extends StatelessWidget {
                 child: ListTile(
                   title: Text('${item['input']}'),
                   subtitle: Text(
-                      '${item['output']} (${item['source']} → ${item['target']})'),
+                    '${item['output']} (${item['source']} → ${item['target']})',
+                  ),
                 ),
               );
             },
