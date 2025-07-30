@@ -1,11 +1,13 @@
 import 'package:etranslate/ult/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../services/TranslationProvider.dart';
 
 class Dashboard extends StatelessWidget {
   final _textController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Dashboard({super.key});
 
@@ -19,6 +21,7 @@ class Dashboard extends StatelessWidget {
             provider.updateInputText(_textController.text);
           });
           return Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               title: Text('Language Translator'),
               actionsPadding: EdgeInsets.only(right: 10),
@@ -28,6 +31,18 @@ class Dashboard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
+              actions: [
+                InkWell(
+                  onTap: () {
+                    _scaffoldKey.currentState!.openEndDrawer();
+                  },
+                  child: Lottie.asset(
+                    'assets/animations/Translate.json',
+                    width: 50,
+                    height: 50,
+                  ),
+                ),
+              ],
             ),
             endDrawer: endDrawer(context),
 
@@ -180,9 +195,12 @@ class Dashboard extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   // output container and text
-                  if(provider.isOutputVisible)
+                  if (provider.isOutputVisible)
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 15,
+                      ),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -222,7 +240,8 @@ class Dashboard extends StatelessWidget {
                             children: [
                               IconButton(
                                 icon: Icon(Icons.copy),
-                                onPressed: () => provider.copyToClipboard(context),
+                                onPressed:
+                                    () => provider.copyToClipboard(context),
                                 tooltip: 'Copy',
                               ),
                               IconButton(
@@ -232,7 +251,8 @@ class Dashboard extends StatelessWidget {
                               ),
                               IconButton(
                                 icon: Icon(Icons.favorite_border),
-                                onPressed: () => provider.saveToFavourites(context),
+                                onPressed:
+                                    () => provider.saveToFavourites(context),
                                 tooltip: 'Favorite',
                               ),
                             ],

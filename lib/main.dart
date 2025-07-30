@@ -58,7 +58,10 @@ class SplashScreen extends StatelessWidget {
               height: 200,
             ),
             SizedBox(height: 15),
-            Text('Translating Anywhere Everywhere', style: TextStyle(fontSize: 20)),
+            Text(
+              'Translating Anywhere Everywhere',
+              style: TextStyle(fontSize: 20),
+            ),
             Spacer(),
             Lottie.asset(
               'assets/animations/eLoading.json',
@@ -95,18 +98,18 @@ class GetStarter extends StatelessWidget {
             right: 20,
             child: ElevatedButton.icon(
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.green),
-                foregroundColor: MaterialStatePropertyAll(Colors.white),
-                shape: MaterialStatePropertyAll(
+                textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 20)),
+                backgroundColor: WidgetStatePropertyAll(Colors.green),
+                shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                padding: MaterialStatePropertyAll(
+                padding: WidgetStatePropertyAll(
                   EdgeInsets.symmetric(vertical: 10),
                 ),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
               ),
-
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
