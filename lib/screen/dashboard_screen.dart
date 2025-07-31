@@ -96,7 +96,7 @@ class Dashboard extends StatelessWidget {
                           ],
                         ),
                         IconButton(
-                          onPressed: provider.switchLanguage,
+                          onPressed: provider.switchLanguages,
                           icon: Icon(Icons.compare_arrows_sharp),
                         ),
                         Row(
@@ -246,13 +246,13 @@ class Dashboard extends StatelessWidget {
                               ),
                               IconButton(
                                 icon: Icon(Icons.share),
-                                onPressed: () => provider.shareText(context),
+                                onPressed: () => provider.shareText(),
                                 tooltip: 'Share',
                               ),
                               IconButton(
                                 icon: Icon(Icons.favorite_border),
                                 onPressed:
-                                    () => provider.saveToFavourites(context),
+                                    () => provider.saveToFavorites(context),
                                 tooltip: 'Favorite',
                               ),
                             ],

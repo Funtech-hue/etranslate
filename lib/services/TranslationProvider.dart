@@ -1,36 +1,32 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:share_plus/share_plus.dart';
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TranslationProvider with ChangeNotifier {
   String _inputText = '';
   String _translatedText = '';
   bool _isOutputVisible = false;
-  String _sourceLang = 'en';
-  String _targetLang = 'yo';
+  String _sourceLang = 'en'; // English
+  String _targetLang = 'yo'; // Yoruba
+  final String _apiKey = 'a_J14hZJajufQRvXpjsr0kKSbAO1shzOeE2kPtEqWjmSY6jgj3eqIM39tMMRHnro60QQgHJJqWlkcbih1A'; // Your Lingvanex API key
 
   String get inputText => _inputText;
-
   String get translatedText => _translatedText;
-
   bool get isOutputVisible => _isOutputVisible;
-
   String get sourceLang => _sourceLang;
-
   String get targetLang => _targetLang;
 
-  //update the input text
+  // Update input text
   void updateInputText(String text) {
     _inputText = text;
     notifyListeners();
   }
 
-  //Switch language between English and Yoruba
-  void switchLanguage() {
+  // Switch languages
+  void switchLanguages() {
     final temp = _sourceLang;
     _sourceLang = _targetLang;
     _targetLang = temp;
@@ -40,55 +36,48 @@ class TranslationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //Translate text using LibreTranslate API
+  // Translate text using Lingvanex API
   Future<void> translateText(BuildContext context) async {
     if (_inputText.trim().isEmpty) return;
 
     try {
       final response = await http.post(
-        Uri.parse('https://libretranslate.com/translate'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('https://api-gl.lingvanex.com/language/translate/v2'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_apiKey',
+        },
         body: jsonEncode({
-          'q': _inputText.trim(),
-          'source': _sourceLang,
-          'target': _targetLang,
-          'format': 'text',
+          'from': _sourceLang,
+          'to': _targetLang,
+          'data': _inputText.trim(),
         }),
       );
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        _translatedText = data['translatedText'];
+        _translatedText = data['result'];
         _isOutputVisible = true;
         notifyListeners();
-
-        _saveToHistory(
-          _inputText.trim(),
-          _translatedText,
-          _sourceLang,
-          _targetLang,
-        );
+        // Save to history
+        _saveToHistory(_inputText, _translatedText, _sourceLang, _targetLang);
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Translation failed')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Translation failed: ${response.statusCode}')),
+        );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Translation failed: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
-  //Save translation to history
+  // Save to history
   Future<void> _saveToHistory(
-    String input,
-    String output,
-    String source,
-    String target,
-  ) async {
+      String input, String output, String source, String target) async {
     final prefs = await SharedPreferences.getInstance();
-
-    List<String> history = prefs.getStringList('history') ?? [];
+    List<String> history = prefs.getStringList('translation_history') ?? [];
     history.add(jsonEncode({
       'input': input,
       'output': output,
@@ -99,36 +88,32 @@ class TranslationProvider with ChangeNotifier {
     await prefs.setStringList('translation_history', history);
   }
 
-  //Clear translation history
-  Future<void> clearHistory() async {
+  // Save to favorites
+  Future<void> saveToFavorites(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('translation_history');
-    _translatedText = '';
-    notifyListeners();
-  }
-
-  //Save to favourite
-  Future<void> saveToFavourites(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    List<String> favourites = prefs.getStringList('favourites') ?? [];
-    favourites.add(jsonEncode({
-      'input': _inputText.trim(),
+    List<String> favorites = prefs.getStringList('favorites') ?? [];
+    favorites.add(jsonEncode({
+      'input': _inputText,
       'output': _translatedText,
       'source': _sourceLang,
-      'target': _targetLang,}));
-    await prefs.setStringList('favourites', favourites);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Saved to favourites')));
+      'target': _targetLang,
+    }));
+    await prefs.setStringList('favorites', favorites);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Added to favorites')),
+    );
   }
 
-  //Copy to clipboard
+  // Copy to clipboard
   void copyToClipboard(BuildContext context) {
     Clipboard.setData(ClipboardData(text: _translatedText));
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Copied to clipboard')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Copied to clipboard')),
+    );
   }
 
-  //Share text
-  void shareText(BuildContext context) {
+  // Share text
+  void shareText() {
     Share.share(_translatedText, subject: 'Translated Text');
   }
 }
