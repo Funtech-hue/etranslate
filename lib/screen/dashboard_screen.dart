@@ -87,9 +87,7 @@ class Dashboard extends StatelessWidget {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            provider.sourceLang == 'en'
-                                ? 'English'
-                                : 'Yoruba',
+                            provider.sourceLang == 'en' ? 'English' : 'Yoruba',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -105,9 +103,7 @@ class Dashboard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            provider.targetLang == 'yo'
-                                ? 'Yoruba'
-                                : 'English',
+                            provider.targetLang == 'yo' ? 'Yoruba' : 'English',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -134,8 +130,12 @@ class Dashboard extends StatelessWidget {
                 SizedBox(height: 20),
                 // input container and text field
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                  height: 250,
+                  padding: EdgeInsets.only(
+                    left: 25,
+                    right: 15,
+                    top: 15,
+                    bottom: 5,
+                  ),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -176,27 +176,66 @@ class Dashboard extends StatelessWidget {
                             color: Colors.grey,
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: ElevatedButton.icon(
-                          onPressed:
-                              provider.inputText.trim().isEmpty
-                                  ? null
-                                  : () => provider.translateText(context),
-                          label: Text('Translate'),
-                          style: ButtonStyle(
-                            textStyle: WidgetStatePropertyAll(
-                              TextStyle(fontSize: 20),
-                            ),
-                            backgroundColor: WidgetStatePropertyAll(
-                              Colors.green,
-                            ),
-                            foregroundColor: WidgetStatePropertyAll(
-                              Colors.white,
-                            ),
-                          ),
+                        style: TextStyle(
+                          fontSize: 22,
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              _textController.clear();
+                              provider.updateInputText('');
+                            },
+                            icon: Icon(Icons.cleaning_services_outlined),
+                          ),
+                          provider.inputText.isEmpty
+                              ? Container(
+                                  height: 40,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Translate',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                          )
+                              : ElevatedButton.icon(
+                                onPressed:
+                                    provider.inputText.trim().isEmpty
+                                        ? null
+                                        : () => provider.translateText(context),
+                                label: Text('Translate'),
+                                style: ButtonStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.symmetric(horizontal: 10)
+                                  ),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  textStyle: WidgetStatePropertyAll(
+                                    TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                                  ),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    Colors.green,
+                                  ),
+                                  foregroundColor: WidgetStatePropertyAll(
+                                    Colors.white,
+                                  ),
+                                ),
+                              ),
+                        ],
                       ),
                     ],
                   ),
@@ -205,10 +244,7 @@ class Dashboard extends StatelessWidget {
                 // output container and text
                 if (provider.isOutputVisible)
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 25,
-                      vertical: 15,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
